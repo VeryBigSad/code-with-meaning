@@ -8,4 +8,5 @@
 Запустить игры
 
 ## Как запустить
-`docker compose up -d --build`
+
+`docker pull docker pull m1k1o/neko:firefox && docker compose up -d --build`
