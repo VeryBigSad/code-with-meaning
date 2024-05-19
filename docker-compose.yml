@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  hack_db:
+    image: "postgres:13"
+    container_name: hack_db
+    restart: "always"
+    env_file: postgres_db/.env
+    ports:
+      - "5437:5432"
+    networks:
+      - hack_backend_network
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+
+  hack_redis:
+    image: "redis:alpine"
+    container_name: hack_redis
+    restart: "always"
+    networks:
+      - hack_backend_network
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+
+  hack_bot:
+    build: .
+    container_name: hack_bot
+    restart: "always"
+    networks:
+      - hack_backend_network
+    depends_on:
+      - hack_db
+      - hack_redis
+    ports:
+      - "8000:80"
+    env_file:
+      - .env
+
+
+networks:
+  hack_backend_network:
+    driver: bridge
