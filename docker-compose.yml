@@ -34,9 +34,60 @@ services:
       - hack_db
       - hack_redis
     ports:
-      - "8000:80"
+      - "8050:80"
     env_file:
       - .env
+
+  neko-rooms:
+    image: "m1k1o/neko-rooms:latest"
+    restart: "unless-stopped"
+    environment:
+      - "TZ=Europe/Moscow"
+      - "NEKO_ROOMS_MUX=false"
+      - "NEKO_ROOMS_EPR=52000-52100"
+      - "NEKO_ROOMS_NAT1TO1=85.192.33.132" # IP address of your server that is reachable from client
+      - "NEKO_ROOMS_INSTANCE_URL=http://85.192.33.132:8000/" # external URL
+      - "NEKO_ROOMS_INSTANCE_NETWORK=neko-rooms-net"
+      - "NEKO_ROOMS_TRAEFIK_ENABLED=false"
+      - "NEKO_ROOMS_PATH_PREFIX=/room/"
+    ports:
+      - "8000:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  neko:
+    image: "m1k1o/neko:firefox"
+    restart: "unless-stopped"
+    shm_size: "2gb"
+    ports:
+      - "8080:8080"
+      - "52050-52100:52050-52100/udp"
+    environment:
+      NEKO_SCREEN: 1280x720@30
+      NEKO_PASSWORD: neko
+      NEKO_PASSWORD_ADMIN: admin
+      NEKO_EPR: 52050-52100
+      NEKO_ICESERVERS: '[{ "urls": [ "turn:192.168.1.60:3478" ], "username":"neko", "credential":"neko" }, { "urls": [ "stun:stun.nextcloud.com:3478" ] }]'
+
+  coturn:
+    image: 'coturn/coturn:latest'
+    network_mode: "host"
+    command: |
+      -n
+      --realm=localhost
+      --fingerprint
+      --listening-ip=0.0.0.0
+      --external-ip=192.168.1.60
+      --listening-port=3478
+      --min-port=52000
+      --max-port=52100
+      --log-file=stdout
+      --user=neko:neko
+      --lt-cred-mech
+
+networks:
+  default:
+    name: "neko-rooms-net"
 
 
 networks:
