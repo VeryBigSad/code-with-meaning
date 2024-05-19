@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комната ребенка</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+        .room {
+            display: grid;
+            grid-template-areas: 
+                "bed desk"
+                "shelf toys";
+            gap: 40px; /* Увеличено значение gap для большего расстояния */
+        }
+        .item {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .item img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        .label {
+            margin-top: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
+        .bed {
+            grid-area: bed;
+        }
+        .desk {
+            grid-area: desk;
+        }
+        .shelf {
+            grid-area: shelf;
+        }
+        .toys {
+            grid-area: toys;
+        }
+        .highlight {
+            transform: scale(1.1);
+            background-color: #ff6347 !important;
+        }
+        .hidden {
+            display: none;
+        }
+        .toy-options {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        .toy-option {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .toy-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .toy-option:hover {
+            transform: scale(1.1);
+        }
+        .sun-moon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .sun-moon img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="room">
+        <div class="item bed" id="bed" onclick="toggleSunMoon()">
+            <img src="bed.jpg" alt="Кровать">
+            <div class="label">Кровать</div>
+        </div>
+        <div class="item desk" id="desk" onclick="redirectTo('https://example.com/lessons')">
+            <img src="computer.png" alt="Стол с компьютером">
+            <div class="label">Стол с компьютером</div>
+        </div>
+        <div class="item shelf" id="shelf" onclick="redirectTo('bookshelf.html')">
+            <img src="bookshelf.jpg" alt="Стеллаж с книгами">
+            <div class="label">Стеллаж с книгами</div>
+        </div>
+        <div class="item toys" id="toys" onclick="showToyOptions()">
+            <img src="toys.jpg" alt="Игрушки">
+            <div class="label">Игрушки</div>
+        </div>
+    </div>
+
+    <div id="toyOptions" class="toy-options hidden">
+        <div class="toy-option" onclick="redirectTo('https://example.com/games')">
+            <img src="gamepad.png" alt="Запустить игры">
+            <div class="label">Запустить игры</div>
+        </div>
+        <div class="toy-option" onclick="redirectTo('https://example.com/walk')">
+            <img src="walk.png" alt="Пойти погулять">
+            <div class="label">Пойти погулять</div>
+        </div>
+    </div>
+
+    <div class="sun-moon" id="sunMoon" onclick="toggleSunMoon()">
+        <img src="sun.png" alt="Солнце">
+    </div>
+
+    <script>
+        function highlightItem(itemId) {
+            document.querySelectorAll('.item').forEach(item => {
+                item.classList.remove('highlight');
+            });
+            document.getElementById(itemId).classList.add('highlight');
+        }
+
+        function redirectTo(url) {
+            window.location.href = url;
+        }
+
+        function showToyOptions() {
+            const toyOptions = document.getElementById('toyOptions');
+            toyOptions.classList.toggle('hidden');
+        }
+
+        function toggleSunMoon() {
+            const sunMoon = document.getElementById('sunMoon');
+            const img = sunMoon.querySelector('img');
+            if (img.getAttribute('src') === 'sun.png') {
+                img.setAttribute('src', 'moon.png');
+                img.setAttribute('alt', 'Луна');
+            } else {
+                img.setAttribute('src', 'sun.png');
+                img.setAttribute('alt', 'Солнце');
+            }
+        }
+
+        function checkSchedule() {
+            const schedule = [
+                { time: '10:00', activity: 'rest' },
+                { time: '12:00', activity: 'study' },
+            ];
+            const currentTime = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+            schedule.forEach(item => {
+                if (currentTime === item.time) {
+                    if (item.activity === 'rest') {
+                        highlightItem('bed');
+                        toggleSunMoon();
+                    } else if (item.activity === 'study') {
+                        highlightItem('desk');
+                    }
+                }
+            });
+        }
+
+        setInterval(checkSchedule, 60000);
+    </script>
+</body>
+</html>

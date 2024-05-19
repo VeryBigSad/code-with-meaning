@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкции</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .section {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #2c3e50;
+        }
+        ol {
+            padding-left: 20px;
+        }
+        li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 50%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .highlight-vowels {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Инструкции</h1>
+
+    <div class="section">
+        <h2>Готовка: Как приготовить яичницу</h2>
+        <ol>
+            <li>Соберите все необходимые ингредиенты и инструменты: яйца, соль, масло, сковорода и лопатка.</li>
+            <li>Разогрейте сковороду на среднем огне и добавьте немного масла.</li>
+            <li>Разбейте яйца в миску.</li>
+            <li>Вылейте яйца на разогретую сковороду.</li>
+            <li>Посолите по вкусу.</li>
+            <li>Жарьте яйца до желаемой степени готовности, периодически помешивая лопаткой.</li>
+            <li>Снимите сковороду с огня и переложите яичницу на тарелку.</li>
+        </ol>
+        <div class="image-container">
+            <img src="scrambled-eggs.png" alt="Яичница">
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Финансовая грамотность: Как снять деньги</h2>
+        <ol>
+            <li>Найдите ближайший банкомат или отделение банка.</li>
+            <li>Вставьте свою банковскую карту в банкомат.</li>
+            <li>Введите свой PIN-код на клавиатуре банкомата.</li>
+            <li>Выберите опцию "Снять деньги" или "Выдача наличных".</li>
+            <li>Выберите сумму, которую хотите снять.</li>
+            <li>Подтвердите операцию и дождитесь выдачи денег.</li>
+            <li>Заберите карту и деньги из банкомата.</li>
+        </ol>
+        <div class="image-container">
+            <img src="atm.png" alt="Снятие денег в банкомате">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const vowels = "аеёиоуыэюяАЕЁИОУЫЭЮЯ";
+            function highlightVowels(element) {
+                const textNodes = getTextNodes(element);
+                textNodes.forEach(node => {
+                    const newText = node.textContent.split('').map(char => {
+                        return vowels.includes(char) ? `<span class="highlight-vowels">${char}</span>` : char;
+                    }).join('');
+                    const span = document.createElement('span');
+                    span.innerHTML = newText;
+                    node.parentNode.replaceChild(span, node);
+                });
+            }
+
+            function getTextNodes(node) {
+                const textNodes = [];
+                function recurse(currentNode) {
+                    if (currentNode.nodeType === 3) {
+                        textNodes.push(currentNode);
+                    } else {
+                        for (const child of currentNode.childNodes) {
+                            recurse(child);
+                        }
+                    }
+                }
+                recurse(node);
+                return textNodes;
+            }
+
+            highlightVowels(document.body);
+        });
+    </script>
+</body>
+</html>
