@@ -90,6 +90,3 @@ networks:
     name: "neko-rooms-net"
 
 
-networks:
-  hack_backend_network:
-    driver: bridge
